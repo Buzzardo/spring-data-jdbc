@@ -56,7 +56,7 @@ public class JdbcEntityTemplateIntegrationTests {
 	@Test // DATAJDBC-112
 	public void saveAndLoadAnEntityWithReferencedEntityById() {
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		assertThat(legoSet.manual.id).describedAs("id of stored manual").isNotNull();
 
@@ -77,7 +77,7 @@ public class JdbcEntityTemplateIntegrationTests {
 	@Test // DATAJDBC-112
 	public void saveAndLoadManyEntitiesWithReferencedEntity() {
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		Iterable<LegoSet> reloadedLegoSets = template.findAll(LegoSet.class);
 
@@ -88,7 +88,7 @@ public class JdbcEntityTemplateIntegrationTests {
 	@Test // DATAJDBC-112
 	public void saveAndLoadManyEntitiesByIdWithReferencedEntity() {
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		Iterable<LegoSet> reloadedLegoSets = template.findAllById(singletonList(legoSet.getId()), LegoSet.class);
 
@@ -101,7 +101,7 @@ public class JdbcEntityTemplateIntegrationTests {
 
 		legoSet.setManual(null);
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		LegoSet reloadedLegoSet = template.findById(legoSet.getId(), LegoSet.class);
 
@@ -111,7 +111,7 @@ public class JdbcEntityTemplateIntegrationTests {
 	@Test // DATAJDBC-112
 	public void saveAndDeleteAnEntityWithReferencedEntity() {
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		template.delete(legoSet, LegoSet.class);
 
@@ -126,7 +126,7 @@ public class JdbcEntityTemplateIntegrationTests {
 	@Test // DATAJDBC-112
 	public void saveAndDeleteAllWithReferencedEntity() {
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		template.deleteAll(LegoSet.class);
 
@@ -142,13 +142,13 @@ public class JdbcEntityTemplateIntegrationTests {
 	public void updateReferencedEntityFromNull() {
 
 		legoSet.setManual(null);
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		Manual manual = new Manual(23L);
 		manual.setContent("Some content");
 		legoSet.setManual(manual);
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		LegoSet reloadedLegoSet = template.findById(legoSet.getId(), LegoSet.class);
 
@@ -158,11 +158,11 @@ public class JdbcEntityTemplateIntegrationTests {
 	@Test // DATAJDBC-112
 	public void updateReferencedEntityToNull() {
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		legoSet.setManual(null);
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		LegoSet reloadedLegoSet = template.findById(legoSet.getId(), LegoSet.class);
 
@@ -177,13 +177,13 @@ public class JdbcEntityTemplateIntegrationTests {
 	@Test // DATAJDBC-112
 	public void replaceReferencedEntity() {
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		Manual manual = new Manual(null);
 		manual.setContent("other content");
 		legoSet.setManual(manual);
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		LegoSet reloadedLegoSet = template.findById(legoSet.getId(), LegoSet.class);
 
@@ -198,11 +198,11 @@ public class JdbcEntityTemplateIntegrationTests {
 	@Test // DATAJDBC-112
 	public void changeReferencedEntity() {
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		legoSet.manual.setContent("new content");
 
-		template.save(legoSet, LegoSet.class);
+		template.save(legoSet);
 
 		LegoSet reloadedLegoSet = template.findById(legoSet.getId(), LegoSet.class);
 

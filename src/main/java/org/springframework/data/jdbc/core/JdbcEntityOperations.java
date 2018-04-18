@@ -23,7 +23,7 @@ package org.springframework.data.jdbc.core;
  */
 public interface JdbcEntityOperations {
 
-	<T> void save(T instance, Class<T> domainType);
+	<T> void save(T instance);
 
 	<T> void deleteById(Object id, Class<T> domainType);
 
