@@ -23,8 +23,7 @@ import java.sql.SQLException;
 
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.convert.ClassGeneratingEntityInstantiator;
-import org.springframework.data.convert.EntityInstantiator;
+import org.springframework.data.convert.EntityInstantiators;
 import org.springframework.data.jdbc.mapping.model.JdbcMappingContext;
 import org.springframework.data.jdbc.mapping.model.JdbcPersistentEntity;
 import org.springframework.data.jdbc.mapping.model.JdbcPersistentProperty;
@@ -35,8 +34,6 @@ import org.springframework.data.mapping.PreferredConstructor.Parameter;
 import org.springframework.data.mapping.model.ConvertingPropertyAccessor;
 import org.springframework.data.mapping.model.ParameterValueProvider;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.lang.Nullable;
-import org.springframework.util.Assert;
 
 /**
  * Maps a ResultSet to an entity of type {@code T}, including entities referenced.
@@ -50,7 +47,7 @@ public class EntityRowMapper<T> implements RowMapper<T> {
 	private static final Converter ITERABLE_OF_ENTRY_TO_MAP_CONVERTER = new IterableOfEntryToMapConverter();
 
 	private final JdbcPersistentEntity<T> entity;
-	private final EntityInstantiator instantiator = new ClassGeneratingEntityInstantiator();
+
 	private final ConversionService conversions;
 	private final JdbcMappingContext context;
 	private final DataAccessStrategy accessStrategy;
@@ -98,9 +95,10 @@ public class EntityRowMapper<T> implements RowMapper<T> {
 	}
 
 	private T createInstance(ResultSet rs) {
-		return instantiator.createInstance(entity, new ResultSetParameterValueProvider(rs, entity, conversions, ""));
-	}
 
+		return context.getInstantiatorFor(entity) //
+				.createInstance(entity, new ResultSetParameterValueProvider(rs, entity, conversions, ""));
+	}
 
 	/**
 	 * Read a single value or a complete Entity from the {@link ResultSet} passed as an argument.
@@ -108,7 +106,6 @@ public class EntityRowMapper<T> implements RowMapper<T> {
 	 * @param resultSet the {@link ResultSet} to extract the value from. Must not be {@code null}.
 	 * @param property the {@link JdbcPersistentProperty} for which the value is intended. Must not be {@code null}.
 	 * @param prefix to be used for all column names accessed by this method. Must not be {@code null}.
-	 *
 	 * @return the value read from the {@link ResultSet}. May be {@code null}.
 	 */
 	private Object readFrom(ResultSet resultSet, JdbcPersistentProperty property, String prefix) {
@@ -138,8 +135,8 @@ public class EntityRowMapper<T> implements RowMapper<T> {
 			return null;
 		}
 
-		S instance = instantiator.createInstance(entity,
-				new ResultSetParameterValueProvider(rs, entity, conversions, prefix));
+		S instance = context.getInstantiatorFor(entity) //
+				.createInstance(entity, new ResultSetParameterValueProvider(rs, entity, conversions, prefix));
 
 		PersistentPropertyAccessor accessor = entity.getPropertyAccessor(instance);
 		ConvertingPropertyAccessor propertyAccessor = new ConvertingPropertyAccessor(accessor, conversions);
