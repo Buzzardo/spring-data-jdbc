@@ -15,15 +15,19 @@
  */
 package org.springframework.data.jdbc.mapping.model;
 
+import org.springframework.data.util.ParsingUtils;
+
 /**
  * Interface and default implementation of a naming strategy. Defaults to no schema, table name based on {@link Class}
- * and column name based on {@link JdbcPersistentProperty}.
+ * and column name based on {@link JdbcPersistentProperty} with name parts of both separated by '_'.
  * <p>
  * NOTE: Can also be used as an adapter. Create a lambda or an anonymous subclass and override any settings to implement
  * a different strategy on the fly.
  * 
  * @author Greg Turnquist
  * @author Michael Simons
+ * @author Kazuki Shimizu
+ * @author Jens Schauder
  * @since 1.0
  */
 public interface NamingStrategy {
@@ -45,17 +49,18 @@ public interface NamingStrategy {
 	}
 
 	/**
-	 * Look up the {@link Class}'s simple name.
+	 * The name of the table to be used for persisting entities having the type passed as an argument. The default
+	 * implementation takes the {@code type.getSimpleName()} and separates camel case parts with '_'.
 	 */
 	default String getTableName(Class<?> type) {
-		return type.getSimpleName();
+		return ParsingUtils.reconcatenateCamelCase(type.getSimpleName(), "_");
 	}
 
 	/**
 	 * Look up the {@link JdbcPersistentProperty}'s name.
 	 */
 	default String getColumnName(JdbcPersistentProperty property) {
-		return property.getName();
+		return ParsingUtils.reconcatenateCamelCase(property.getName(), "_");
 	}
 
 	default String getQualifiedTableName(Class<?> type) {

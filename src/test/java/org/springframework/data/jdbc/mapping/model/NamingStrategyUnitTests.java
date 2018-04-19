@@ -15,25 +15,27 @@
  */
 package org.springframework.data.jdbc.mapping.model;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import lombok.Data;
-import org.junit.Test;
-import org.springframework.data.annotation.Id;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
+import org.junit.Test;
+import org.springframework.data.annotation.Id;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
 /**
- * Unit tests for the {@link DelimiterNamingStrategy}.
+ * Unit tests for the default {@link NamingStrategy}.
  *
  * @author Kazuki Shimizu
+ * @author Jens Schauder
  */
-public class DelimiterNamingStrategyUnitTests {
+public class NamingStrategyUnitTests {
 
-	private final DelimiterNamingStrategy target = new DelimiterNamingStrategy();
+	private final NamingStrategy target = NamingStrategy.INSTANCE;
 
 	private final JdbcPersistentEntity<?> persistentEntity =
 			new JdbcMappingContext(target, mock(NamedParameterJdbcOperations.class), mock(ConversionCustomizer.class))
