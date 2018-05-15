@@ -37,23 +37,27 @@ public class NamingStrategyUnitTests {
 
 	private final NamingStrategy target = NamingStrategy.INSTANCE;
 
-	private final JdbcPersistentEntity<?> persistentEntity =
-			new JdbcMappingContext(target, mock(NamedParameterJdbcOperations.class), mock(ConversionCustomizer.class))
-					.getRequiredPersistentEntity(DummyEntity.class);
+	private final JdbcPersistentEntity<?> persistentEntity = //
+			new JdbcMappingContext(target, //
+					mock(NamedParameterJdbcOperations.class), //
+					mock(ConversionCustomizer.class)) //
+							.getRequiredPersistentEntity(DummyEntity.class);
 
 	@Test // DATAJDBC-184
 	public void getTableName() {
-		assertThat(target.getTableName(persistentEntity.getType()))
+
+		assertThat(target.getTableName(persistentEntity.getType())) //
 				.isEqualTo("dummy_entity");
 	}
 
 	@Test // DATAJDBC-184
 	public void getColumnName() {
-		assertThat(target.getColumnName(persistentEntity.getPersistentProperty("id")))
+
+		assertThat(target.getColumnName(persistentEntity.getPersistentProperty("id"))) //
 				.isEqualTo("id");
-		assertThat(target.getColumnName(persistentEntity.getPersistentProperty("createdAt")))
+		assertThat(target.getColumnName(persistentEntity.getPersistentProperty("createdAt"))) //
 				.isEqualTo("created_at");
-		assertThat(target.getColumnName(persistentEntity.getPersistentProperty("dummySubEntities")))
+		assertThat(target.getColumnName(persistentEntity.getPersistentProperty("dummySubEntities"))) //
 				.isEqualTo("dummy_sub_entities");
 	}
 
@@ -65,34 +69,34 @@ public class NamingStrategyUnitTests {
 
 	@Test // DATAJDBC-184
 	public void getKeyColumn() {
-		assertThat(target.getKeyColumn(persistentEntity.getPersistentProperty("dummySubEntities")))
+
+		assertThat(target.getKeyColumn(persistentEntity.getPersistentProperty("dummySubEntities"))) //
 				.isEqualTo("dummy_entity_key");
 	}
 
 	@Test // DATAJDBC-184
 	public void getSchema() {
-		assertThat(target.getSchema())
-				.isEmpty();
+		assertThat(target.getSchema()).isEmpty();
 	}
 
 	@Test // DATAJDBC-184
 	public void getQualifiedTableName() {
-		assertThat(target.getQualifiedTableName(persistentEntity.getType()))
-				.isEqualTo("dummy_entity");
+
+		assertThat(target.getQualifiedTableName(persistentEntity.getType())).isEqualTo("dummy_entity");
 	}
 
 	@Data
 	private static class DummyEntity {
-		@Id
-		private int id;
+
+		@Id private int id;
 		private LocalDateTime createdAt;
 		private List<DummySubEntity> dummySubEntities;
 	}
 
 	@Data
 	private static class DummySubEntity {
-		@Id
-		private int id;
+
+		@Id private int id;
 		private LocalDateTime createdAt;
 	}
 

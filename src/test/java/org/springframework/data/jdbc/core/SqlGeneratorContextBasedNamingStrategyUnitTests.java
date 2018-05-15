@@ -97,11 +97,11 @@ public class SqlGeneratorContextBasedNamingStrategyUnitTests {
 
 			String sql = sqlGenerator.createDeleteByPath(PropertyPath.from("ref.further", DummyEntity.class));
 
-			assertThat(sql).isEqualTo(
-				"DELETE FROM " + user + ".second_level_referenced_entity " +
-					"WHERE " + user + ".referenced_entity IN " +
-						"(SELECT l1id FROM " + user + ".referenced_entity " +
-						"WHERE " + user + ".dummy_entity = :rootId)");
+			assertThat(sql).isEqualTo( //
+					"DELETE FROM " + user + ".second_level_referenced_entity " //
+							+ "WHERE " + user + ".referenced_entity IN " //
+							+ "(SELECT l1id FROM " + user + ".referenced_entity " //
+							+ "WHERE " + user + ".dummy_entity = :rootId)");
 		});
 	}
 
@@ -127,8 +127,8 @@ public class SqlGeneratorContextBasedNamingStrategyUnitTests {
 
 			String sql = sqlGenerator.createDeleteAllSql(PropertyPath.from("ref", DummyEntity.class));
 
-			assertThat(sql).isEqualTo(
-				"DELETE FROM " + user + ".referenced_entity WHERE " + user + ".dummy_entity IS NOT NULL");
+			assertThat(sql).isEqualTo( //
+					"DELETE FROM " + user + ".referenced_entity WHERE " + user + ".dummy_entity IS NOT NULL");
 		});
 	}
 
@@ -141,11 +141,11 @@ public class SqlGeneratorContextBasedNamingStrategyUnitTests {
 
 			String sql = sqlGenerator.createDeleteAllSql(PropertyPath.from("ref.further", DummyEntity.class));
 
-			assertThat(sql).isEqualTo(
-				"DELETE FROM " + user + ".second_level_referenced_entity " +
-				"WHERE " + user + ".referenced_entity IN " +
-					"(SELECT l1id FROM " + user + ".referenced_entity " +
-					"WHERE " + user + ".dummy_entity IS NOT NULL)");
+			assertThat(sql).isEqualTo( //
+					"DELETE FROM " + user + ".second_level_referenced_entity " //
+							+ "WHERE " + user + ".referenced_entity IN " //
+							+ "(SELECT l1id FROM " + user + ".referenced_entity " //
+							+ "WHERE " + user + ".dummy_entity IS NOT NULL)");
 		});
 	}
 
@@ -161,7 +161,7 @@ public class SqlGeneratorContextBasedNamingStrategyUnitTests {
 		threadedTest("User2", latch, testAssertions, exception);
 
 		try {
-			if (!latch.await(10L, TimeUnit.SECONDS)){
+			if (!latch.await(10L, TimeUnit.SECONDS)) {
 				fail("Test failed due to a time out.");
 			}
 		} catch (InterruptedException e) {
@@ -175,10 +175,11 @@ public class SqlGeneratorContextBasedNamingStrategyUnitTests {
 	}
 
 	/**
-	 * Inside a {@link Runnable}, fetch the {@link ThreadLocal}-based username and execute the provided
-	 * set of assertions. Then signal through the provided {@link CountDownLatch}.
+	 * Inside a {@link Runnable}, fetch the {@link ThreadLocal}-based username and execute the provided set of assertions.
+	 * Then signal through the provided {@link CountDownLatch}.
 	 */
-	private void threadedTest(String user, CountDownLatch latch, Consumer<String> testAssertions, AtomicReference<Error> exception) {
+	private void threadedTest(String user, CountDownLatch latch, Consumer<String> testAssertions,
+			AtomicReference<Error> exception) {
 
 		new Thread(() -> {
 
@@ -201,7 +202,12 @@ public class SqlGeneratorContextBasedNamingStrategyUnitTests {
 	 */
 	private SqlGenerator configureSqlGenerator(NamingStrategy namingStrategy) {
 
-		JdbcMappingContext context = new JdbcMappingContext(namingStrategy, mock(NamedParameterJdbcOperations.class), __ -> {});
+		JdbcMappingContext context = new JdbcMappingContext( //
+				namingStrategy, //
+				mock(NamedParameterJdbcOperations.class), //
+				__ -> {} //
+		);
+
 		JdbcPersistentEntity<?> persistentEntity = context.getRequiredPersistentEntity(DummyEntity.class);
 
 		return new SqlGenerator(context, persistentEntity, new SqlGeneratorSource(context));

@@ -46,7 +46,12 @@ public class SqlGeneratorUnitTests {
 	public void setUp() {
 
 		NamingStrategy namingStrategy = new PrefixingNamingStrategy();
-		JdbcMappingContext context = new JdbcMappingContext(namingStrategy, mock(NamedParameterJdbcOperations.class), __ -> {});
+		JdbcMappingContext context = new JdbcMappingContext( //
+				namingStrategy, //
+				mock(NamedParameterJdbcOperations.class), //
+				__ -> {} //
+		);
+
 		JdbcPersistentEntity<?> persistentEntity = context.getRequiredPersistentEntity(DummyEntity.class);
 		this.sqlGenerator = new SqlGenerator(context, persistentEntity, new SqlGeneratorSource(context));
 	}
@@ -128,14 +133,14 @@ public class SqlGeneratorUnitTests {
 		// this would get called when DummyEntity is th element type of a Map
 		String sql = sqlGenerator.getFindAllByProperty("back-ref", "key-column", false);
 
-		assertThat(sql).isEqualTo("SELECT dummy_entity.x_id AS x_id, dummy_entity.x_name AS x_name, "
-				+ "ref.x_l1id AS ref_x_l1id, ref.x_content AS ref_x_content, ref.x_further AS ref_x_further, "
-				+ "dummy_entity.key-column AS key-column "
-				+ "FROM dummy_entity LEFT OUTER JOIN referenced_entity AS ref ON ref.dummy_entity = dummy_entity.x_id "
+		assertThat(sql).isEqualTo("SELECT dummy_entity.x_id AS x_id, dummy_entity.x_name AS x_name, " //
+				+ "ref.x_l1id AS ref_x_l1id, ref.x_content AS ref_x_content, ref.x_further AS ref_x_further, " //
+				+ "dummy_entity.key-column AS key-column " //
+				+ "FROM dummy_entity LEFT OUTER JOIN referenced_entity AS ref ON ref.dummy_entity = dummy_entity.x_id " //
 				+ "WHERE back-ref = :back-ref");
 	}
 
-	@Test (expected = IllegalArgumentException.class) // DATAJDBC-130
+	@Test(expected = IllegalArgumentException.class) // DATAJDBC-130
 	public void findAllByPropertyOrderedWithoutKey() {
 		String sql = sqlGenerator.getFindAllByProperty("back-ref", null, true);
 	}
@@ -146,13 +151,12 @@ public class SqlGeneratorUnitTests {
 		// this would get called when DummyEntity is th element type of a Map
 		String sql = sqlGenerator.getFindAllByProperty("back-ref", "key-column", true);
 
-		assertThat(sql).isEqualTo("SELECT dummy_entity.x_id AS x_id, dummy_entity.x_name AS x_name, "
-				+ "ref.x_l1id AS ref_x_l1id, ref.x_content AS ref_x_content, ref.x_further AS ref_x_further, "
-				+ "dummy_entity.key-column AS key-column "
-				+ "FROM dummy_entity LEFT OUTER JOIN referenced_entity AS ref ON ref.dummy_entity = dummy_entity.x_id "
-				+ "WHERE back-ref = :back-ref "
-				+ "ORDER BY key-column"
-		);
+		assertThat(sql).isEqualTo("SELECT dummy_entity.x_id AS x_id, dummy_entity.x_name AS x_name, " //
+				+ "ref.x_l1id AS ref_x_l1id, ref.x_content AS ref_x_content, ref.x_further AS ref_x_further, " //
+				+ "dummy_entity.key-column AS key-column " //
+				+ "FROM dummy_entity LEFT OUTER JOIN referenced_entity AS ref ON ref.dummy_entity = dummy_entity.x_id " //
+				+ "WHERE back-ref = :back-ref " //
+				+ "ORDER BY key-column");
 	}
 
 	@SuppressWarnings("unused")
